@@ -4,7 +4,7 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --ignore-scripts
 
 # Pass build-time environment variable
 ARG REACT_APP_SERVER_URL
