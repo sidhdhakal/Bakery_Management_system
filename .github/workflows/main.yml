@@ -21,6 +21,8 @@ jobs:
 
     - name: Build Frontend Image
       run: docker build -t siddhartha54/bakery-frontend:${{ env.IMAGE_TAG }} ./frontend
+      env:
+        REACT_APP_SERVER_URL: ""
 
     - name: Build Backend Image
       run: docker build -t siddhartha54/bakery-backend:${{ env.IMAGE_TAG }} ./backend
