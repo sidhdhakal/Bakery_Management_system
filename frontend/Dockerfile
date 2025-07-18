@@ -6,7 +6,6 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --ignore-scripts
 
-# Pass build-time environment variable
 ARG REACT_APP_SERVER_URL
 ENV REACT_APP_SERVER_URL=$REACT_APP_SERVER_URL
 
@@ -18,9 +17,6 @@ RUN npm run build
 FROM nginx:stable-alpine
 
 COPY --from=build /app/build /usr/share/nginx/html
-
-# Optional: custom nginx config
-# COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
