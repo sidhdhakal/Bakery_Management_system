@@ -4,6 +4,11 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
+
+# Build context मा proxy config हटाउने (यदि proxy config छ भने)
+RUN npm config delete proxy || true
+RUN npm config delete https-proxy || true
+
 RUN npm install --ignore-scripts
 
 ARG REACT_APP_SERVER_URL
