@@ -4,7 +4,7 @@ metadata:
   name: frontend
   namespace: bakery 
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: frontend
