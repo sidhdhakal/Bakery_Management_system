@@ -2,7 +2,6 @@ name: Deploy to Kubernetes
 
 on:
   workflow_run:
-    # This name MUST exactly match the 'name:' in build.yml
     workflows: ["Build and Push Docker Images"]
     types:
       - completed
@@ -11,10 +10,8 @@ jobs:
   update-deployments:
     runs-on: ubuntu-latest
 
-    # CRITICAL: Only run this job if the triggering build workflow was successful
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
-    # CRITICAL: Grant permission for the workflow to push to your repository
     permissions:
       contents: write
 
@@ -25,10 +22,8 @@ jobs:
     - name: Download image tag artifact from build workflow
       uses: actions/download-artifact@v4
       with:
-        name: image-tag # This name must match the upload step
-        # THE FIX: Specify the ID of the run that created the artifact
-        run-id: ${{ github.event.workflow_run.id }}
-        path: . # Download to the current directory
+        name: image-tag
+        path: .
 
     - name: Load image tag from file into environment variable
       run: echo "IMAGE_TAG=$(cat image_tag.txt)" >> $GITHUB_ENV
@@ -43,8 +38,7 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add kubernetes/frontend/deployment.yml kubernetes/backend/deployment.yml
-        
-        # Check if there are changes to commit to avoid an error
+
         if ! git diff-index --quiet HEAD; then
           git commit -m "Deploy: Update image tags to ${{ env.IMAGE_TAG }}"
           git push
