@@ -1,0 +1,11 @@
+resources:
+  - backend/deployment.yml
+  - backend/service.yml
+  - frontend/deployment.yml
+  - frontend/service.yml
+  - mongo/statefulset.yml
+  - mongo/service.yml
+  - redis/deployment.yml
+  - redis/service.yml
+  - ingress.yml
+  - namespace.yml
