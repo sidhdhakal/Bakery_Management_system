@@ -1,10 +1,21 @@
 resources:
   - backend/deployment.yml
   - backend/service.yml
+  - backend/hpa.yml
+  - backend/secret.yml
+  - backend/configmap.yml
+  - backend/networkpolicy.yml
   - frontend/deployment.yml
   - frontend/service.yml
-  - mongo/statefulset.yml
+  - frontend/configmap.yml
+  - frontend/hpa.yml
+  - frontend/networkpolicy.yml
+  - mongo/stateful.yml
   - mongo/service.yml
+  - mongo/pv.yml
+  - mongo/pvc.yml
+  - mongo/neworkpolicy.yml
+  - mongo/secret.yml
   - redis/deployment.yml
   - redis/service.yml
   - ingress.yml
