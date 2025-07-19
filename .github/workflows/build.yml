@@ -1,3 +1,4 @@
+# build.yml
 name: Build and Push Docker Images
 
 on:
@@ -5,32 +6,42 @@ on:
     branches:
       - main
 
+env:
+  DOCKER_USERNAME: siddhartha54 # Can be set here or as a secret if you prefer
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      with:
+        # We need the full history to get the correct short SHA
+        fetch-depth: 0
 
     - name: Login to DockerHub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Set Unique Image Tag
+    - name: Generate Image Tag
       id: vars
-      run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
+      run: echo "IMAGE_TAG=$(date +%Y%m%d)-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-    - name: Build Frontend Image
-      run: docker build -t siddhartha54/bakery-frontend:${{ env.IMAGE_TAG }} ./frontend
+    - name: Build and push Frontend Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        push: true
+        tags: ${{ env.DOCKER_USERNAME }}/bakery-frontend:${{ env.IMAGE_TAG }}
 
-    - name: Build Backend Image
-      run: docker build -t siddhartha54/bakery-backend:${{ env.IMAGE_TAG }} ./backend
-
-    - name: Push Frontend Image
-      run: docker push siddhartha54/bakery-frontend:${{ env.IMAGE_TAG }}
-
-    - name: Push Backend Image
-      run: docker push siddhartha54/bakery-backend:${{ env.IMAGE_TAG }}
+    - name: Build and push Backend Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        push: true
+        tags: ${{ env.DOCKER_USERNAME }}/bakery-backend:${{ env.IMAGE_TAG }}
 
     - name: Save image tag to file
       run: echo "${{ env.IMAGE_TAG }}" > image_tag.txt
