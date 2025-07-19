@@ -24,7 +24,9 @@ jobs:
 
     - name: Generate Image Tag
       id: tag
-      run: echo "TAG=$(date +%Y%m%d)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      run: |
+        RANDOM_TAG=$(( RANDOM % 90 + 10 ))
+        echo "TAG=$RANDOM_TAG" >> $GITHUB_OUTPUT
 
     - name: Build and Push Frontend Image
       uses: docker/build-push-action@v5
