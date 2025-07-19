@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: siddhartha54/bakery-frontend:49
+          image: siddhartha54/bakery-frontend:73
           ports:
             - containerPort: 80    
           env:

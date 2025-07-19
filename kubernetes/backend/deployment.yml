@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: siddhartha54/bakery-backend:49
+          image: siddhartha54/bakery-backend:73
           ports:
             - containerPort: 5000
           env:
