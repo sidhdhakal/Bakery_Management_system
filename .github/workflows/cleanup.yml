@@ -1,0 +1,20 @@
+name: Cleanup Old Resources
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Every Sunday at midnight
+
+jobs:
+  cleanup-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Delete old Docker tags (manual script or call Docker Hub API)
+      run: echo "🧹 (Add API call or script here to delete old Docker tags)"
+
+  cleanup-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Delete stale branches (needs GitHub CLI or REST API)
+      run: echo "🧹 (Script to delete stale branches - optional)"
