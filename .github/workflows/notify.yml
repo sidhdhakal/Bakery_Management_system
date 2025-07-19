@@ -1,0 +1,34 @@
+name: Notify After Deploy
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Kubernetes"]
+    types:
+      - completed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send Discord Notification
+      if: success()
+      uses: Ilshidur/action-discord@v1
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        message: '🚀 Bakery backend & frontend deployed successfully!'
+
+    - name: Send Email Notification
+      if: success()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Bakery App Deployed
+        to: your-team@example.com
+        from: Bakery CI/CD
+        body: |
+          ✅ The latest build has been successfully deployed to production.
+          🕒 Timestamp: ${{ github.event.head_commit.timestamp }}

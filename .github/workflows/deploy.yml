@@ -1,0 +1,39 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Images"]
+    types:
+      - completed
+
+jobs:
+  update-deployments:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Download image tag
+      uses: actions/download-artifact@v4
+      with:
+        name: image-tag
+
+    - name: Load image tag
+      run: echo "IMAGE_TAG=$(cat image_tag.txt)" >> $GITHUB_ENV
+
+    - name: Update Frontend Deployment YAML
+      run: |
+        sed -i "s|image: .*/bakery-frontend:.*|image: siddhartha54/bakery-frontend:${{ env.IMAGE_TAG }}|" kubernetes/frontend/deployment.yml
+
+    - name: Update Backend Deployment YAML
+      run: |
+        sed -i "s|image: .*/bakery-backend:.*|image: siddhartha54/bakery-backend:${{ env.IMAGE_TAG }}|" kubernetes/backend/deployment.yml
+
+    - name: Git Commit and Push
+      run: |
+        git config --global user.name "${{ secrets.GIT_USERNAME }}"
+        git config --global user.email "${{ secrets.GIT_EMAIL }}"
+        git add kubernetes/frontend/deployment.yml kubernetes/backend/deployment.yml
+        git commit -m "Update image tags to ${{ env.IMAGE_TAG }}"
+        git push https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }} HEAD:main
