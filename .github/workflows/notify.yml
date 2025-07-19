@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Send Discord Notification
       if: success()
-      uses: Ilshidur/action-discord@v1
+      uses: Ilshidur/action-discord@v1.0.3
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
         message: '🚀 Bakery backend & frontend deployed successfully!'
