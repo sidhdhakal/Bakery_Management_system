@@ -8,8 +8,6 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-    networks:
-      - bakery_network
 
   backend:
     build:
@@ -20,10 +18,9 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGODB_URL=mongodb://mongo:27017/bakerydb
+      - MONGO_URL=mongodb://mongo:27017/bakerydb
     networks:
       - bakery_network
-    restart: always  # 🔁 restart on failure
 
   frontend:
     build:
@@ -37,7 +34,6 @@ services:
       - REACT_APP_SERVER_DOMIN=http://backend:5000
     networks:
       - bakery_network
-    restart: always
 
 volumes:
   mongo-data:
