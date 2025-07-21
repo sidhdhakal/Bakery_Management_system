@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: frontend-config
-  namespace: bakery 
-data:
-  REACT_APP_SERVER_DOMIN: "http://backend-service:5000"
