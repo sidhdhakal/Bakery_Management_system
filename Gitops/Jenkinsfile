@@ -1,0 +1,100 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'FRONTEND_DOCKER_TAG', defaultValue: '', description: 'Frontend Docker tag of the image built by the CI job')
+        string(name: 'BACKEND_DOCKER_TAG', defaultValue: '', description: 'Backend Docker tag of the image built by the CI job')
+    }
+
+    stages {
+        stage("Workspace cleanup") {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Git: Code Checkout') {
+            steps {
+                git url: 'https://github.com/sidhdhakal/Bakery_Management_system.git', branch: 'main'
+            }
+        }
+
+        stage('Verify: Docker Image Tags') {
+            steps {
+                script {
+                    echo "FRONTEND_DOCKER_TAG: ${params.FRONTEND_DOCKER_TAG}"
+                    echo "BACKEND_DOCKER_TAG: ${params.BACKEND_DOCKER_TAG}"
+                }
+            }
+        }
+
+        stage("Update: Kubernetes manifests") {
+            steps {
+                dir('kubernetes/overlays/prod') {
+                    script {
+                        sh """
+                            sed -i -E 's|(siddhartha54/bakery-backend:).*|\\1${params.BACKEND_DOCKER_TAG}|' backend-patch.yml
+                            sed -i -E 's|(siddhartha54/bakery-frontend:).*|\\1${params.FRONTEND_DOCKER_TAG}|' frontend-patch.yml
+                        """
+                    }
+                }
+            }
+        }
+
+        stage("Git: Code update and push to GitHub") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'Github-cred', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                    script {
+                        sh """
+                            git config user.name "${GIT_USER}"
+                            git config user.email "${GIT_USER}@example.com"
+                            
+                            git add kubernetes/overlays/prod/*.yml
+                            git commit -m "Updated image tags from CD pipeline"
+                            git push https://${GIT_USER}:${GIT_PASS}@github.com/sidhdhakal/Bakery_Management_system.git main
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            emailext(
+                attachLog: true,
+                from: 'siddharthadhakal54@gmail.com',
+                subject: "✅ WApplication deployed successfully - Build #${env.BUILD_NUMBER}",
+                body: """
+                    <html>
+                    <body>
+                        <p><b>Job:</b> ${env.JOB_NAME}</p>
+                        <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                        <p><b>URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    </body>
+                    </html>
+                """,
+                to: 'siddharthadhakal54@gmail.com',
+                mimeType: 'text/html'
+            )
+        }
+
+        failure {
+            emailext(
+                attachLog: true,
+                from: 'siddharthadhakal54@gmail.com',
+                subject: "❌ Wakeryp   lication build failed - Build #${env.BUILD_NUMBER}",
+                body: """
+                    <html>
+                    <body>
+                        <p><b>Job:</b> ${env.JOB_NAME}</p>
+                        <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                    </body>
+                    </html>
+                """,
+                to: 'siddharthadhakal54@gmail.com',
+                mimeType: 'text/html'
+            )
+        }
+    }
+}
