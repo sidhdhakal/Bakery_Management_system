@@ -1,0 +1,25 @@
+replicaCount: 1
+
+image:
+  repository: siddhartha54/bakery-frontend 
+  tag: 48
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort 
+  port: 80
+  targetPort: 3000
+
+env:
+  REACT_APP_SERVER_DOMAIN: "http://backend.bakery.svc.cluster.local:5000"
+
+
+serviceAccount:
+  create: true
+  name: "" 
+  
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data:
+  NODE_ENV: production
+  PORT: "3000"
+  REACT_APP_SERVER_DOMIN: http://backend.bakery.svc.cluster.local:5000/api  # Replace with your backend service URL

@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:6.0  # Override image

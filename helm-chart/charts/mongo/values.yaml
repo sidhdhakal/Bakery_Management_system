@@ -1,0 +1,40 @@
+replicaCount: 1
+
+image:
+  repository: mongo
+  tag: "5.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 27017
+  targetPort: 27017
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+env:
+  - name: MONGO_INITDB_ROOT_USERNAME
+    value: user
+  - name: MONGO_INITDB_ROOT_PASSWORD
+    value: pass
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+serviceAccount:
+  create: true
+  name: ""
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: false

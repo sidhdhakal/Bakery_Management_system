@@ -1,0 +1,9 @@
+# backend-configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  MONGODB_URL: mongodb://mongo-0.mongo:27017/bakerydb # <-- FIXED
+  NODE_ENV: production
+  PORT: "5000"
