@@ -8,5 +8,5 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: siddhartha54/bakery-frontend:48  # Replace with your dev image
+          image: siddhartha54/bakery-frontend:v5
           
