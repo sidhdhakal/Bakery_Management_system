@@ -8,5 +8,5 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: siddhartha54/bakery-frontend:v5
+          image: siddhartha54/bakery-frontend:latest
           
