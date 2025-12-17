@@ -13,7 +13,7 @@ const AllProduct = ({ heading }) => {
 
   //filter data display in the filter
   const [filterby, setFilterBy] = useState("");
-  const [dataFilter, setDataFilter] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  const [dataFilter, setDataFilter] = useState([1, 2, 3, , 6, 7, 8, 9, 10]);
 
   useEffect(() => {
     setDataFilter(productData);
