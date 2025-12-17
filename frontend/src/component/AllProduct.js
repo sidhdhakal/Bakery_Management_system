@@ -11,17 +11,21 @@ const AllProduct = ({ heading }) => {
   const [filterby, setFilterBy] = useState("");
   const [dataFilter, setDataFilter] = useState([]);
 
+  //filter data display in the filter
+  const [filterby, setFilterBy] = useState("");
+  const [dataFilter, setDataFilter] = useState([1, 2, 3, , 6, 7, 8, 9, 10]);
+
   useEffect(() => {
     setDataFilter(productData);
   }, [productData]);
 
   const handleFilterProduct = (category) => {
-    setFilterBy(category)
+    setFilterBy(category);
     const filter = productData.filter(
       (el) => el.category.toLowerCase() === category.toLowerCase()
     );
-    setDataFilter(() => {  
-      return [...filter]; 
+    setDataFilter(() => {
+      return [...filter];
     });
   };
 
@@ -64,9 +68,8 @@ const AllProduct = ({ heading }) => {
                 />
               );
             })
-          : 
-          loadingArrayFeature.map((el,index) => (
-              <CardFeature loading="Loading..." key={index+"allProduct"} />
+          : loadingArrayFeature.map((el, index) => (
+              <CardFeature loading="Loading..." key={index + "allProduct"} />
             ))}
       </div>
     </div>
